@@ -6,12 +6,6 @@ FROM {{ source('reddit_comments', '20*') }}
 WHERE subreddit = 'AmItheAsshole'
 AND _table_suffix > '19_'
 
-{%- if is_incremental() -%}
-{%- if execute -%}
-{%- set last_stamp_sql -%}SELECT FORMAT_TIMESTAMP('%y_%mX', MAX(ts)) maxsuffix FROM {{this}}{%- endset -%}
-{%- set last_stamp_result = run_query(last_stamp_sql) -%}
-AND _table_suffix > "{{last_stamp_result.rows[0].get('maxsuffix')[:-1]}}"
-{# Somewhere '19_01' gets transformed to '1901', unless I add an 'X' to FORMAT_TIMESTAMP() and [:-1] later. #} 
+{% if is_incremental() -%}
+AND _table_suffix > (SELECT FORMAT_TIMESTAMP('%y_%m', MAX(ts)) from {{ this }})
 {%- endif -%}
-{%- endif -%}
-

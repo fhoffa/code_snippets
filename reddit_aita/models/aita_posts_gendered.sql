@@ -7,7 +7,7 @@ WITH data AS (
     , ARRAY_LENGTH(REGEXP_EXTRACT_ALL(CONCAT(selftext, title), r'(?i)\bthey\b')) theys
     , ARRAY_LENGTH(REGEXP_EXTRACT_ALL(CONCAT(selftext, title), r'(?i)\bgirlfriend\b')) gfs
     , ARRAY_LENGTH(REGEXP_EXTRACT_ALL(CONCAT(selftext, title), r'(?i)\bboyfriend\b')) bfs
-  FROM {{ref('aita_posts')}} 
+  FROM {{ref('aita_posts')}}
   WHERE link_flair_text IS NOT NULL
 ), gendered_data AS (
   SELECT *
@@ -23,7 +23,7 @@ WITH data AS (
 )
 
 
-SELECT CASE link_flair_text 
+SELECT CASE link_flair_text
     WHEN 'not the a-hole' THEN 'no asshole'
     WHEN 'no a-holes here' THEN 'no asshole'
     WHEN 'everyone sucks' THEN 'asshole'

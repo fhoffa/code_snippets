@@ -3,9 +3,11 @@ version: 2
 
 sources:
         - name: reddit_comments
+          database: fh-bigquery
           tables:
                 - name: '20*'
         - name: reddit_posts
+          database: fh-bigquery
           tables:
                 - name: '20*'
 
