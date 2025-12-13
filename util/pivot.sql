@@ -1,8 +1,8 @@
-CREATE OR REPLACE FUNCTION 
+CREATE OR REPLACE FUNCTION
 `fhoffa.x.normalize_col_name`(col_name STRING) AS (
-  REGEXP_REPLACE(col_name,r'[/+#|]', '_'
-)
-  
+  REGEXP_REPLACE(col_name,r'[/+#|]', '_')
+);
+
 CREATE OR REPLACE PROCEDURE `fhoffa.x.pivot`(
   table_name STRING
   , destination_table STRING
@@ -15,15 +15,15 @@ CREATE OR REPLACE PROCEDURE `fhoffa.x.pivot`(
   )
 BEGIN
   DECLARE pivotter STRING;
-  
+
   EXECUTE IMMEDIATE (
     "SELECT STRING_AGG(' "||aggregation
-    ||"""(IF('||@pivot_col_name||'="'||x.value||'", '||@pivot_col_value||', null)) e_'||fhoffa.x.normalize_col_name(x.value))
+    ||"""(IF('||@pivot_col_name||'="'||x.value||'", '||@pivot_col_value||', null)) e_'||`fhoffa.x.normalize_col_name`(x.value))
    FROM UNNEST((
        SELECT APPROX_TOP_COUNT("""||pivot_col_name||", @max_columns) FROM `"||table_name||"`)) x"
-  ) INTO pivotter 
+  ) INTO pivotter
   USING pivot_col_name AS pivot_col_name, pivot_col_value AS pivot_col_value, max_columns AS max_columns;
-  
+
   EXECUTE IMMEDIATE (
    'CREATE OR REPLACE TABLE `'||destination_table
    ||'` AS SELECT '
